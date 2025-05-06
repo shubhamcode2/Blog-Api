@@ -9,8 +9,8 @@ import { uploadOnCloudinary } from "../utils.js/cloudinary.js";
 const registerUser = async (req, res) => {
 
     try {
-        const { userName, Name, email, password, bio, role } = req.body;
-        const profilePicture = req.file ? req.file.path : null
+        const { userName, email, password } = req.body;
+        // const profilePicture = req.file ? req.file.path : null
 
         if ([userName, email, , password].some((field) => field?.trim() === "")) {
             throw new ApiError(400, "Please fill all the fields")
@@ -21,30 +21,27 @@ const registerUser = async (req, res) => {
             throw new ApiError(400, "User already exists")
         }
 
-        const cloudinaryUpload = await uploadOnCloudinary(profilePicture);
 
-        if (!cloudinaryUpload) {
-            // If the upload fails, handle the error accordingly
-            return res.status(400).json({
-                success: false,
-                message: "Error uploading to Cloudinary or file not provided",
-                data: null,
-                error: "CloudinaryError",
-            });
-        }
+        // const cloudinaryUpload = await uploadOnCloudinary(profilePicture);
+
+        // if (!cloudinaryUpload) {
+        //     // If the upload fails, handle the error accordingly
+        //     return res.status(400).json({
+        //         success: false,
+        //         message: "Error uploading to Cloudinary or file not provided",
+        //         data: null,
+        //         error: "CloudinaryError",
+        //     });
+        // }
 
         // If the upload is successful, you can access the URL and other details from the response
-        const uploadedImageUrl = cloudinaryUpload.secure_url; // Use the secure URL for HTTPS
+        // const uploadedImageUrl = cloudinaryUpload.secure_url || null; // Use the secure URL for HTTPS
 
 
         const user = await User.create({
             userName,
             password,
-            Name,
             email,
-            profilePicture: uploadedImageUrl,
-            bio,
-            role,
         })
 
         //jwt token
@@ -151,8 +148,8 @@ const logoutUser = async (req, res) => {
 
 const getUserProfile = async (req, res, next) => {
 
-    
-   return res.status(200).json(
+
+    return res.status(200).json(
         new ApiResponse(200, req.user, "User profile fetched successfully")
     )
 

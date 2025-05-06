@@ -74,7 +74,7 @@ const getAllPosts = async (req, res, next) => {
             .skip(skip)
             .limit(limit)
             .populate("author", "name email profilePicture")
-            .sort({ createdAt: 1 });
+            .sort({ createdAt: -1 });
 
         if (!posts || posts.length === 0) {
             return res.status(404).json({ message: "No posts found" });
